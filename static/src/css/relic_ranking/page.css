@@ -1,0 +1,17 @@
+@import url(main.css);
+@import url(header.css);
+@import url(description.css);
+@import url(content.css);
+
+#content_container{
+    width:1000px;
+    
+    background-color: #404040;
+
+    margin:auto;
+    margin-bottom:300px;
+
+    padding-top:30px;
+    padding-bottom:30px;
+    border-radius:20px;
+}

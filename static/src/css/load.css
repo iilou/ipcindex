@@ -1,0 +1,58 @@
+.uidSearch_main{
+    width:600px;
+    background-color: var(--color-black_2);
+    padding:20px;
+    border-radius:10px;
+}
+
+#uidSearch_text{
+    width:90%;
+    display:block;
+    font-size:32px;
+    height:54px;
+    font-weight:800;
+    letter-spacing: 1px;
+    border-radius:10px;
+
+    margin:auto;
+    text-align:center;
+
+    border: 1px var(--color-content_border) solid;
+    color: var(--color-content_border);
+    background-color: transparent;
+}
+
+#uidSearch_text:focus, #uidSearch_text:active, #uidSearch_text:hover{
+    outline:none;    
+    border: 1px var(--color-content_title) solid;
+    color: var(--color-content_title);
+    /* border:none; */
+}
+
+#uidSearch_button{
+    width:27%;
+    display:block;
+    font-size:20px;
+    font-weight:700;
+    margin:10px auto;
+    padding:4px 0px;
+    text-align:center;
+    border-radius:10px;
+    user-select: none;
+
+    border: 1px var(--color-content_border) solid;
+    color: var(--color-content_border);
+}
+
+#uidSearch_button:hover{
+    /* background-color: #565656; */
+    color: var(--color-content_title);
+    border-color: var(--color-content_title);
+    cursor:pointer;
+}
+
+#uidSearch_button:active, #uidSearch_button:focus{
+    color: var(--color-content_border);
+    border-color: var(--color-content_border);
+    cursor:pointer;
+}

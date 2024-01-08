@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPC Index</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='src/css/generic.css') }}">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='src/css/load.css') }}">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='src/css/profile_preview.css') }}">
+    <link rel="icon" href="../static/assets/LOGO.png">
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="{{url_for('static', filename='src/javascript/makeElement.js')}}" defer></script>
+    <script src="{{url_for('static', filename='src/javascript/load_uid.js')}}" defer></script>
+    <script src="{{url_for('static', filename='src/javascript/sidebar.js')}}" defer></script>
+</head>
+<body>
+    <div id="header">
+        <div id="header_title">IPC Index</div>
+    </div>
+    <div id="body">
+        <div id="sidebar">
+            <div id="sidebar_selector"></div>
+
+            <a class="sidebar_option active" id="Load_UID">Load UID</a>
+            <a class="sidebar_option" id="Profile" href="{{url_for('profile_py')}}">Profile</a>
+            <a class="sidebar_option" id="Relic_Ranking" href="{{ url_for('relic_ranking_py') }}">Relic Leaderboards</a>
+        </div>
+        <div id="content">
+            <div id="content_buffer"></div>
+            <div id="content_title">Account Loader</div>
+            <div id="content_body">
+                <div class="uidSearch_main">
+                    <input name="" id="uidSearch_text" cols="30" rows="1" type="input"/>
+                    <div id="uidSearch_button">Search Index</div>
+    
+                    <div id="profile_preview_box">
+                        <div id="profile_preview_title">
+                            --- Profile Queue ---
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function performPost(uid){
+            $.ajax({
+                type: "POST",
+                url: "{{url_for('create_file')}}",
+                data: {"uid": uid},
+                success: function(data){
+                    searchResult(data);
+                },
+                dataType: "json"
+            })
+        }
+        function switchTab(tab){
+            window.location.href = "{{url_for('profile_py')}}";
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+#profile_preview_box{
+    width:80%;
+    height:fit-content;
+    margin:40px auto 0px auto;
+    border-radius:10px;
+    padding:10px 0px;
+
+    display:grid;
+    grid-template-columns: auto;
+    gap:10px;
+    
+    border:1px solid var(--color-content_border);
+    user-select: none;
+}
+
+#profile_preview_box:hover{
+    border-color: var(--color-content_title);
+}
+
+#profile_preview_title{
+    font-size:24px;
+    font-weight:700;
+    margin:auto;
+    text-align:center;
+    color: var(--color-main_4);
+}
+
+
+.profile_preview{
+    width:340px;
+    height:120px;
+    border-radius:30px;
+    margin:auto;
+    display:grid;
+    grid-template-columns: 110px auto;
+    
+    background-color:var(--color-result);
+    color: var(--color-result_text);
+}
+
+.profile_preview:hover{
+    background-color: var(--color-content_title);
+}
+
+.profile_preview_logo{
+    width:88px;
+    height:88px;
+    margin:auto;
+    background-color: var(--color-body_result);
+    border-radius:100vw;
+    display:block;
+}
+
+.profile_preview_logo img{
+    display:block;
+    width:90%;
+    height:90%;
+    margin-left:5%;
+    margin-top:5%;
+    border-radius:100%;
+}
+
+.profile_preview_description{
+    display:grid;
+    grid-template-columns: auto;
+    grid-template-rows: 35px 20px auto;
+    padding-top:8px;
+    height:100%;
+}
+
+.profile_preview_title{
+    font-size:14px;
+    font-weight:700;
+    display:block;
+}
+
+.profile_preview_level{
+    font-size:12px;
+    font-weight:500;
+}
+
+.profile_preview_uid{
+    font-size:24px;
+    font-weight:900;
+    letter-spacing: 1.5px;
+    /* margin-left:19px; */
+}
+
+
+#profile_preview_page_index_box{
+    width:fit-content;
+    height:fit-content;
+    margin:auto;
+    display:grid;
+    grid-auto-flow: column;
+    grid-template-rows:auto;
+    gap:10px;
+}

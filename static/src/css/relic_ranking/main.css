@@ -1,0 +1,28 @@
+div{
+    font-family: 'Inter', sans-serif;
+    font-weight:900;
+}
+
+.S_RANK{
+    color:#6BFFED;
+}
+
+.A_RANK{
+    color:#6BFFA6;
+}
+
+.B_RANK{
+    color:#BEFF6B;
+}
+
+.C_RANK{
+    color:#FFD96B;
+}
+
+.D_RANK{
+    color:#FFA66B;
+}
+
+.F_RANK{
+    color:#FF6B6B;
+}

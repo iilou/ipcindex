@@ -1,0 +1,229 @@
+:root{
+    --header-height:80px;
+    --sidebar-width:180px;
+
+
+    --header-background-color:yellow;
+    --sidebar-background-color:blue;
+    --content-background-color:green;
+
+    --color-black_1: #303030;
+    --color-black_2: #404040;
+    --color-black_3: #505050;
+    --color-black_4: #606060;
+    --color-black_5: #707070;
+
+    --color-white_1: #e8e8e8;
+    --color-white_2: #d1d1d1;
+    --color-white_3: #b9b9b9;
+    --color-white_4: #a2a2a2;
+    --color-white_5: #8a8a8a;
+
+    --color-main_1: #543b30;
+    --color-main_2: #784f33;
+    --color-main_3: #ac6836;
+    --color-main_4: #d08a49;
+    --color-main_5: #f7b03c;
+    --color-main_6: #f7e577;
+    --color-main_7: #ab9178;
+
+    --color-title: var(--color-main_3);
+    --color-main_border: var(--color-black_3);
+
+    --color-header: #242424;
+    --text-header: #e8e8e8;
+    --color-sidebar: var(--color-black_4);
+
+    --color-body: var(--color-black_3);
+    --color-body_result: var(--color-black_1);
+    
+    --color-content_title: var(--color-main_4);
+    --color-content_border: var(--color-black_3);
+
+    --color-result: var(--color-main_7);
+    --color-result_text: var(--color-black_2);
+    
+}
+
+@font-face{
+    font-family: firstworld;
+    src: url(../../assets/font/SDK_SC_Web.ttf);
+}
+
+html body{
+    margin:0;
+    padding:0;
+
+    overflow-x:hidden;
+    background-color:var(--color-body);
+    /* font-family: firstworld; */
+    font-family:Inter;
+}
+
+#header{
+    position:sticky;
+    display:flex;
+    z-index:100000;
+    top:0;
+    width:100%;
+    height:var(--header-height);
+
+    
+    border-bottom: 1px solid;
+    border-color: var(--color-main_border);
+    background-color:var(--color-header);
+}
+
+#header_logo{
+    width:var(--sidebar-width);
+    height:100%;
+
+
+    background-color:var(--color-white_3);
+
+
+    /* will be removed */
+    font-size:32px;
+    font-weight:500;
+    text-align:center;
+    line-height:var(--header-height);
+    display:block
+}
+
+#header_title{
+    margin:auto;
+    font-size:36px;
+    font-weight:800;
+    text-align:center;
+    line-height: var(--header-height);
+    display:block;
+    width:fit-content;
+
+    color:var(--color-title);
+}
+
+
+
+#body{
+    position:static;
+
+    width:auto;
+}
+
+
+
+#sidebar{
+    position:fixed;
+    height:calc(100vh - var(--header-height));
+
+    border-right: 1px solid;
+    border-color: var(--color-main_border);
+    background-color:var(--color-sidebar);
+
+    display:flex;
+    flex-direction:column;
+
+    z-index:10000;
+}
+
+.sidebar_option{
+    width:70%;
+    /* height:80px; */
+    font-size:16px;
+    font-weight: 700;
+    text-align:center;
+    text-decoration: none;
+    border-radius:10px;
+    /* line-height:80px; */
+    /* transform: */
+
+    margin: 10px auto;
+    padding:20px 10px;
+    background-color: var(--color-black_2);
+    color: var(--color-white_2);
+
+
+
+    display:none;
+}
+
+.sidebar_option:hover{
+    color: var(--color-main_3);
+}
+
+.sidebar_option:active{
+    background-color: var(--color-main_4);
+    color: var(--color-black_2);
+}
+
+.sidebar_option.active{
+    background-color: var(--color-main_4);
+    color: var(--color-black_2);
+}
+
+#sidebar_selector{
+    width:8px;
+    height:100px;
+    /* display:absolute; */
+    margin-top:calc(50vh - var(--header-height));
+    border-radius: 4px;
+    /* top:50vh; */
+    background-color: var(--color-black_1);
+}
+
+
+
+
+#content{
+    position:static;
+    width:auto;
+    height:fit-content;
+
+    padding: 0px 20px;
+    
+    overflow-x: auto;
+}
+
+#content_buffer{
+    height:10px;
+}
+
+#content_title{
+    font-size:42px;
+    font-weight:1000;
+    text-align: center;
+    width:fit-content;
+    height:60px;
+    margin: 30px auto;
+
+    color:var(--color-content_title);
+}
+
+#content_body{
+    width:fit-content;
+    border-radius:10px;
+    margin:auto;
+
+    /* background-color: var(--color-body_result); */
+
+    /* padding:20px 40px; */
+}
+
+
+::-webkit-scrollbar{
+    width:1rem;
+    height:1rem;
+    background-color:black;
+}
+
+::-webkit-scrollbar-thumb{
+    background-color:#353535;
+    border-radius:100vw;
+    border:0.25rem solid black;
+}
+
+::-webkit-scrollbar-track{
+    background-color:black;
+    border-radius:100vw;
+    margin-block:0.5em;
+}

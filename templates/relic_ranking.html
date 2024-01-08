@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPC Index</title>
+    <link href = "https://fonts.googleapis.com/icon?family=Material+Icons" rel = "stylesheet">
+    
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='src/css/generic.css') }}">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='src/css/relic_ranking/page.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <link rel="icon" href="../static/assets/LOGO.png">
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="{{url_for('static', filename='src/javascript/makeElement.js')}}" defer></script>
+    <script src="{{url_for('static', filename='src/javascript/sidebar.js')}}" defer></script>
+    <script src="{{url_for('static', filename='src/javascript/relic_ranking.js')}}" defer></script>
+</head>
+<body>
+    <div id="header">
+        <div id="header_title">IPC Index</div>
+    </div>
+    <div id="body">
+        <div id="sidebar">
+            <div id="sidebar_selector"></div>
+            
+            <a class="sidebar_option" id="Load_UID" href="{{ url_for('load_uid_py') }}">Load UID</a>
+            <a class="sidebar_option" id="Profile" href="{{url_for('profile_py')}}">Profile</a>
+            <a class="sidebar_option active" id="Relic_Ranking">Relic Leaderboards</a>
+        </div>
+        <div id="content">
+            <div id="content_buffer"></div>
+            <div id="content_title">Relic Evaluator</div>
+            <div id="content_container">
+                
+            </div>
+        </div>
+    </div>
+</body>
+</html>
