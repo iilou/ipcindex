@@ -8,7 +8,6 @@ Code needs some polishing
 ![image](https://github.com/iilou/ipcindex/assets/88070090/26c32e09-0eef-4ff6-8145-1d2ba78a5986)
 ![image](https://github.com/iilou/ipcindex/assets/88070090/88047379-2109-482e-afbe-44560c0d9abc)
 ![image](https://github.com/iilou/ipcindex/assets/88070090/b529fcf5-3ab1-4930-93e5-14490e180e0b)
-
-
-[WIP]
-![image](https://github.com/iilou/ipcindex/assets/88070090/879f3f1f-b29f-41ae-b465-69d6174738bf)
+![image](https://github.com/iilou/ipcindex/assets/88070090/dfe7c50d-f954-4bf8-a47f-d157aaad50b9)
+![image](https://github.com/iilou/ipcindex/assets/88070090/dab0518f-b1fe-41dd-b3f1-d7a0b4073016)
+![image](https://github.com/iilou/ipcindex/assets/88070090/32d9f584-f32e-430a-af02-bc29a23ef71b)
