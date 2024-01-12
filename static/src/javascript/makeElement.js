@@ -1,6 +1,4 @@
-const aeonImages = {
-    "The Hunt": "HoshinoKami_005.png"
-}
+
 
 function makeElement(tagName, className, text, attr) {
     var element = document.createElement(tagName);
@@ -18,7 +16,7 @@ function makeElement(tagName, className, text, attr) {
 
 function renderTree(tree, root, rootName){
     for(let key in tree){
-        if(key != "type" && key != "text" && key != "src" && key != "break" && key != "css" && key != "class" && key != "attr"){
+        if(key != "type" && key != "text" && key != "src" && key != "srcRaw" && key != "break" && key != "css" && key != "class" && key != "attr"){
             let child = tree[key];
 
             // if child element declares break, child className is child name
@@ -36,10 +34,8 @@ function renderTree(tree, root, rootName){
             }
 
             if("type" in child && child["type"] == "img"){
-                // elm.setAttribute("src", "static/assets/" + child["src"]);
-                // elm.setAttribute("src", 'url("https://raw.githubusercontent.com/iilou/StarRailRes_/master/' + child["src"] + '")');
-                // elm.setAttribute("src", 'url(https://raw.githubusercontent.com/iilou/StarRailRes_/master/' + child["src"] + '.png)');
-                elm.setAttribute("src", 'https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/' + child["src"]);
+                if("src" in child) elm.setAttribute("src", 'https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/' + child["src"]);
+                else if ("srcRaw" in child) elm.setAttribute("src", child["srcRaw"]);
             };
 
             if("class" in child){

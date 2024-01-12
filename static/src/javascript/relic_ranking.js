@@ -9,15 +9,7 @@ const relic_ranking_html_load = (container, profile) => {
             profile:{},
             char:{}
         },
-
-        description:{
-            max:{},
-            rank:{},
-            substat:{},
-            mainstat:{},
-            set:{},
-        },
-
+        description:{},
         content:{}
     }
 
@@ -60,7 +52,7 @@ const relic_ranking_html_load = (container, profile) => {
             if(char_list[i] == undefined) continue;
 
             dropdown[char_count] = {
-                class:"char_selection_dropdown_item",
+                class:"char_selection_dropdown_item char_selection_"+i,
                 text:char_list[i]["name"]
             }
             char_count++;
@@ -72,11 +64,7 @@ const relic_ranking_html_load = (container, profile) => {
         html_tree.header.char.selection_container.dropdown = dropdown;
     }
 
-    const addContent = (character) => {
-        const calc_relic_value = (relic) => {
-            return 300;
-        }
-
+    const addContent = (character, data, subData) => {
         let content_tree = {
             overview:{},
             relic_0:{},
@@ -85,127 +73,216 @@ const relic_ranking_html_load = (container, profile) => {
             relic_3:{},
             relic_4:{},
             relic_5:{},
-            relic_set:{}
+            // relic_set:{}
         }
 
-        let relicData = Array(6).fill("none");
+        let overallPoints = 0;
+        let overallRank = "";
 
-        for(let i = 0; i < 6; i++){
-            if(character["relics"][i] == undefined) continue;
-            relicData[character["relics"][i]["id"]%10-1] = character["relics"][i];
+        let ranking_data = "";
+
+        const get_relic_data = () => {
+            let relicData = Array(6).fill("none");
+
+            const reduced_stat_name = (name, type) =>{
+                // if(name == "Break Effect") return name;
+                if(name.includes("DMG Boost")) return "DMG"+"%";
+                if(name == "Energy Regeneration Rate") return "Energy Regen%";
+                if(type.includes("Ratio")) return name + "%";
+                return name;
+            }
+    
+            const reduced_stat_value = (val, name) => {
+                if(name.includes("%")) return val*100;
+                else if (name.includes("CRIT")) return val*100;
+                return val;
+            }
+    
+            const get_main_weight = (i) => { return ("any" in data.mainstat[i])?data.mainstat[i]["any"]:(data.mainstat[i][relicData[i]["main_affix"].lname]==undefined?0:data.mainstat[i][relicData[i]["main_affix"].lname])}
+            const get_sub_weight = (i, j) => {return data.substat[relicData[i]["sub_affix"][j].lname]==undefined?0:data.substat[relicData[i]["sub_affix"][j].lname] };
+    
+            const get_sub_nw = (i, j) => { return relicData[i]["sub_affix"][j].value / relic_ranking_data["substat"][relicData[i]["sub_affix"][j].name.toLowerCase()] }
+            const get_sub_pts = (i, j) => { return relicData[i]["sub_affix"][j].nw * relicData[i]["sub_affix"][j].weight; };
+    
+            const get_relic_rank = (val, i) => { for(let j = 0; j < 5; j++) if(val > data.relic_rank_thresholds[ranks[j]][i]) {return ranks[j]} return "f"}
+            const get_overall_rank = (val) => {for(let i = 0; i < 5; i++) if(val > data.overall_rank_thresholds[ranks[i]]) {return ranks[i]}; return "f"}
+    
+            for(let i = 0; i < 6; i++){
+                if(character["relics"][i] == undefined) continue;
+                let ci = character["relics"][i]["id"]%10-1;
+                relicData[ci] = structuredClone(character["relics"][i]);
+    
+    
+                relicData[ci].main_affix.name = reduced_stat_name(relicData[ci].main_affix.name, relicData[ci].main_affix.type);
+                relicData[ci].main_affix.lname = relicData[ci].main_affix.name.toLowerCase();
+                relicData[ci].main_affix.value = reduced_stat_value(relicData[ci].main_affix.value, relicData[ci].main_affix.name);
+                relicData[ci].main_affix.weight = get_main_weight(ci);
+                relicData[ci].main_affix.pts = relicData[ci].main_affix.weight;
+                let culmPoints = relicData[ci].main_affix.pts;
+                
+                for(let j = 0; j < 4; j++){
+                    if(relicData[ci]["sub_affix"][j].name == undefined) break;
+                    
+                    relicData[ci].sub_affix[j].name = reduced_stat_name(relicData[ci].sub_affix[j].name, relicData[ci].sub_affix[j].type);
+                    relicData[ci].sub_affix[j].lname = relicData[ci].sub_affix[j].name.toLowerCase();
+                    relicData[ci].sub_affix[j].value = reduced_stat_value(relicData[ci]["sub_affix"][j].value, relicData[ci]["sub_affix"][j].name);
+                    relicData[ci].sub_affix[j].weight = get_sub_weight(ci, j);
+                    relicData[ci].sub_affix[j].nw = get_sub_nw(ci, j);
+                    relicData[ci].sub_affix[j].pts = get_sub_pts(ci, j);
+                    culmPoints += relicData[ci].sub_affix[j].pts;
+                }
+    
+                relicData[ci].culmPoints = culmPoints;
+                overallPoints += culmPoints;
+    
+                relicData[ci].rank = get_relic_rank(relicData[ci].culmPoints, ci);
+            }
+
+            // console.log(overallPoints, overallRank, data.overall_rank_thresholds);
+            overallRank = get_overall_rank(overallPoints);
+
+            // console.log(relicData);
+
+            return relicData;
         }
 
-        for(let i = 0; i < 6; i++){
+        const addOverview = (tree, pts, rnk) => {
+            tree.overview = {
+                icon:{
+                    type:"img",
+                    class:"overview_icon",
+                    src: character.icon,
+                },
+                name:{
+                    text: character.name,
+                    css:{
+                        "fontSize": character.name.length>15?"15px":"20px"
+                    }
+                },
+                level:{
+                    text: "Lv. " + character.level,
+                },
+                container:{
+                    title:{
+                        text: "Relic Value",
+                    },
+                    score:{
+                        text: pts.toFixed(2) + "p",
+                    },
+                    letter:{
+                        class: rnk.toUpperCase() + "_RANK",
+                        text: rnk.toUpperCase(),                //TEMP
+                        // css:{backgroundColor:""}
+                    },
+                    max:{
+                        text:"Max Value: 320p"   //TEMP
+                    }
+                }
+            }
+        }
+        
+        const addRelic = (i, relicData) => {
+            let exists = relicData[i] != "none";
+            console.log(i, exists, relicData[i]);
+
             content_tree["relic_"+i] = {
                 class:"_content_relic_container",
                 icon:{
                     class:"_content_relic_icon",
                     type:"img",
-                    src:relicData[i].icon
                 },
                 table:{
                     class:"_content_relic_table",
                 }
             }
 
-            let labels = ["Name", "Value", "W", "N", "Nr", "P"];
-            for(let j = 0; j < 6; j++){
+            if(exists) content_tree["relic_"+i].icon.src = relicData[i].icon;
+            else {
+                content_tree["relic_"+i].icon["srcRaw"] = "https://visualpharm.com/assets/873/Nothing%20Found-595b40b65ba036ed117d20ae.svg";
+                console.log("srcraw: ",content_tree["relic_"+i].icon);
+            }
+
+            const add_content_relic_value = (label, text, className="_content_relic_value") => {
+                content_tree["relic_"+i]["table"][label] = {
+                    class:className,
+                    text:text,
+                }
+            }
+
+            
+
+            let labels = ["Name", "Value", "W", "Nr", "P"];
+            for(let j = 0; j < labels.length; j++){
                 content_tree["relic_"+i]["table"]["label_"+j] = {
                     class:"_content_relic_label",
                     text:labels[j]
                 }
             }
-            if(relicData[i] == "none"){
-                for(let j = 0; j < 6*5; j++){
-                    content_tree["relic_"+i]["table"]["value_"+j] = {
-                        class:"_content_relic_value",
-                        text:"-"
-                    }
-                }
-            }else{
-                // main main_v main_w main_n_1 main_nw_1 main_p_1
-                content_tree["relic_"+i]["table"]["main"] = {
-                    class:"_content_relic_value",
-                    text:relicData[i]["main_affix"].name,
-                }
-                content_tree["relic_"+i]["table"]["main_v"] = {
-                    class:"_content_relic_value",
-                    text:relicData[i]["main_affix"].value.toFixed(2),
-                }
-                content_tree["relic_"+i]["table"]["main_w"] = {
-                    class:"_content_relic_value",
-                    text:10,
-                }
-                content_tree["relic_"+i]["table"]["main_n"] = {
-                    class:"_content_relic_value",
-                    text:10,
-                }
-                content_tree["relic_"+i]["table"]["main_nw"] = {
-                    class:"_content_relic_value",
-                    text:10,
-                }
-                content_tree["relic_"+i]["table"]["main_p"] = {
-                    class:"_content_relic_value",
-                    text:"10p",
-                }
-                for(let j = 0; j < 4; j++){
-                    let has = j in relicData[i]["sub_affix"];
-                    content_tree["relic_"+i]["table"]["sub_"+j] = {
-                        class:"_content_relic_value",
-                        text:has?relicData[i]["sub_affix"][j].name:"-",     
-                    }
-                    content_tree["relic_"+i]["table"]["sub_"+j+"v"] = {
-                        class:"_content_relic_value",
-                        text:has?relicData[i]["sub_affix"][j].value.toFixed(2):"-",
-                    }
-                    content_tree["relic_"+i]["table"]["sub_"+j+"w"] = {
-                        class:"_content_relic_value",
-                        text:10,
-                    }
-                    content_tree["relic_"+i]["table"]["sub_"+j+"n"] = {
-                        class:"_content_relic_value",
-                        text:10,
-                    }
-                    content_tree["relic_"+i]["table"]["sub_"+j+"nw"] = {
-                        class:"_content_relic_value",
-                        text:10,
-                    }
-                    content_tree["relic_"+i]["table"]["sub_"+j+"p"] = {
-                        class:"_content_relic_value",
-                        text:"10p",
-                    }
-                }
-            }
 
-            content_tree["relic_"+i]["table"]["label_5"].class += " top_right_ajsfiodj";
-            content_tree["relic_"+i]["table"]["sub_3p"].class += " bottom_right_ajsfiodj";
+            add_content_relic_value("rank", (exists?relicData[i].rank.toUpperCase():"-"), "_content_relic_rank "+(exists?relicData[i].rank.toUpperCase()+"_RANK":""));
+            add_content_relic_value("culmPoints", "Total Value: "+(exists?relicData[i].culmPoints.toFixed(1)+" pts":"-"), "_content_relic_culmPoints");
+
+            // main main_v main_w main_n_1 main_nw_1 main_p_1
+            add_content_relic_value("main",     exists?relicData[i]["main_affix"].name:"-");
+            add_content_relic_value("main_v",   exists?relicData[i]["main_affix"].value.toFixed(2):"-");
+            add_content_relic_value("main_w",   exists?relicData[i]["main_affix"].weight.toFixed(1):"-");
+            add_content_relic_value("main_nw",  "-");
+            add_content_relic_value("main_p",   exists?relicData[i]["main_affix"].pts.toFixed(1):"-");
+
+            for(let j = 0; j < 4; j++){
+                let has = exists && (j in relicData[i]["sub_affix"]);
+                add_content_relic_value("sub_"+j,       has?relicData[i]["sub_affix"][j].name:"-");
+                add_content_relic_value("sub_"+j+"_v",  has?relicData[i]["sub_affix"][j].value.toFixed(1):"-");
+                add_content_relic_value("sub_"+j+"_w",  has?relicData[i]["sub_affix"][j].weight.toFixed(1):"-");
+                add_content_relic_value("sub_"+j+"_nw", has?relicData[i]["sub_affix"][j].nw.toFixed(1):"-");
+                add_content_relic_value("sub_"+j+"_p",  has?relicData[i]["sub_affix"][j].pts.toFixed(1):"-");
+            }
+            // }
+
+            content_tree["relic_"+i]["table"]["label_4"].class += " top_right_ajsfiodj";
+            content_tree["relic_"+i]["table"]["sub_3_p"].class += " bottom_right_ajsfiodj";
+            // console.log(data.substat["asdf"]==undefined);
         }
 
+        let relic_data = get_relic_data();
+        console.log("relic_data: ",relic_data);
 
+        addOverview(content_tree, overallPoints, overallRank);
+        for(let i = 0; i < 6; i++){
+            addRelic(i, relic_data);
+        }
 
         return content_tree;
     }
 
-    const addDescription = (root, rankData, subData, mainData, setData) => {
-        console.log(rankData)
+    const addDescription = (setData, data) => {
+        // console.log(rankData)
+
+        let root = {max:{},rank:{},substat:{},mainstat:{},set:{}}
+
+        const camalize = (str) => {
+            if(str == "spd") return "SPD"
+            return str.replace(/\w+/g, function(w){return w[0].toUpperCase() + w.slice(1).toLowerCase();});
+        }        
 
         const addRankData = () => {
             for(let i = 0; i < 6; i++){
                 root.rank[i] = {
                     class:"_description_rank_container",
                     name:{
-                        class:"_description_rank_name "+rankData[i].name+"_RANK",
-                        text:rankData[i].name
+                        class:"_description_rank_name "+ranks[i].toUpperCase()+"_RANK",
+                        text:ranks[i].toUpperCase()
                     },
                     value:{
                         class:"_description_rank_value",
-                        text:"> "+rankData[i].value
+                        text:"> "+Math.round(data.overall_rank_thresholds[ranks[i]])
                     },
                 }
             }
         }
 
         const addSubData = () => {
+            root.substat["title"] = {class:"_description_category_title", text:"Sub Stat Weights"}
             root.substat["_label"] = {
                 class:"_description_substat_label _description_substat_container",
                 name:{
@@ -217,46 +294,38 @@ const relic_ranking_html_load = (container, profile) => {
                     text:"Weight"
                 },
             }
-            for(let i = 0; i < subData.count; i++){
+            let i = 0;
+            for(let stat in data.substat){
                 root.substat["substat_"+i] = {
                     class:"_description_substat_container",
-                    name:{
-                        class:"_description_substat_name",
-                        text:subData[i].name
-                    },
-                    value:{
-                        class:"_description_substat_value",
-                        text:subData[i].value
-                    },
+                    name:{ class:"_description_substat_name", text:camalize(stat) },
+                    value:{ class:"_description_substat_value", text:data.substat[stat] },
                 }
+                i++;
             }
         }
 
         const addMainData = () => {
-            let types = mainData.types;
-            for(let i = 0; i < 6; i++){
-                if(mainData.count[i] == 0) continue;
-
-                root.mainstat[types[i]] = {
-                    class:"_description_mainstat_container",
-                    title:{
-                        class:"_description_mainstat_title",
-                        text:types[i]
-                    },
-                    list:{class:"_description_mainstat_list"}
-                }
-
-                for(let j = 0; j < mainData.count[i]; j++){
-                    root.mainstat[types[i]].list[j+"_name"] = {
-                        class:"_description_mainstat_name",
-                        text:mainData[types[i]][j].name
-                    }
-                    root.mainstat[types[i]].list[j+"_value"] = {
-                        class:"_description_mainstat_value",
-                        text:mainData[types[i]][j].value
-                    }
-                }
+            root.mainstat["title"] = {class:"_description_category_title", text:"Main Stat Weights"}
+            root.mainstat["_label"] = {
+                class:"_description_mainstat_label",
+                relic_type:{ class:"_description_mainstat_type", text:"Type" },
+                name:{ class:"_description_mainstat_name", text: "Name" },
+                weight:{ class:"_description_mainstat_name", text: "Weight" },
             }
+            root.mainstat.content = {class:"_description_mainstat_content"}
+            for(let i = 0; i < 6; i++){
+                // if(root.mainstat.)/
+                root.mainstat.content[i] = {class:"_description_mainstat_container"}
+                root.mainstat.content[i]["type_"+i]={class:"_description_mainstat_type", text: relic_names[i]}
+                root.mainstat.content[i]["stat_attr"] = {class:"_description_mainstat_attr"};
+                let j = 0;
+                for(let stat in data.mainstat[i]){
+                    root.mainstat.content[i]["stat_attr"]["name_"+j] = {class:"_description_mainstat_name", text: camalize(stat)}
+                    root.mainstat.content[i]["stat_attr"]["value_"+j] = {class:"_description_mainstat_value", text: Math.round(data.mainstat[i][stat])};
+                    j++;
+                }
+            } 
         }
 
         const addSetData = () => {
@@ -285,8 +354,18 @@ const relic_ranking_html_load = (container, profile) => {
         addMainData();
         addSetData();
 
-        console.log(root);
+        // console.log(root);
         return root;
+    }
+
+    const reload_page = () => {
+        container.innerHTML = "";
+        if(currentCharacter.name == "Ruan Mei") ranking_data = relic_ranking_data[relic_ranking_data.char[currentCharacter.name]["default"]];
+        else ranking_data = relic_ranking_data[relic_ranking_data.char["Seele"]["default"]];
+        html_tree["description"] = addDescription(tempData.setData, ranking_data);
+        html_tree["content"] = addContent(currentCharacter, ranking_data);
+        renderTree(html_tree, container, "");
+        char_select_init();
     }
 
     const char_select_init = () => {
@@ -294,16 +373,15 @@ const relic_ranking_html_load = (container, profile) => {
         let selector = document.querySelector("._header_char_selection_container_title");
         let dropdown = document.querySelector("._header_char_selection_container_dropdown");
         let dropdownList = document.getElementsByClassName("char_selection_dropdown_item");
-        console.log(dropdownList);
 
         selector.addEventListener("click", () => { container.style.display = "block"; });
-        document.addEventListener("click", (e) => { 
-            for(let i = 0; i < dropdownList.length; i++) if(e.target == dropdownList[i]){
+        container.addEventListener("mouseleave", () => { container.style.display = "none"; });
+        for(let i = 0; i < dropdownList.length; i++){
+            dropdownList[i].addEventListener("click", (e) => {
                 currentCharacter = profile.characters[i];
-                alert(currentCharacter.name);
-            } 
-            if(e.target != selector) container.style.display = "none";
-        });
+                reload_page();
+            })
+        }
     }
 
 
@@ -480,15 +558,9 @@ const relic_ranking_html_load = (container, profile) => {
     }
 
     addHeader();
-    html_tree["description"] = addDescription(html_tree.description, tempData.rankData, tempData.subData, tempData.mainData, tempData.setData);
-
     currentCharacter = profile["characters"][0];
-    html_tree["content"] = addContent(currentCharacter);
 
-
-    renderTree(html_tree, container, "");
-
-    char_select_init();
+    reload_page();
 }
 
 // console.log(document.getElementById("content_body"));
