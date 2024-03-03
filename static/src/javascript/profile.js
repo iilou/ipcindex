@@ -1,12 +1,34 @@
-const profile = localStorage.getItem("current_hsr_profile");
+var profile = localStorage.getItem("current_hsr_profile");
 console.log(JSON.parse(profile));
 
 $("#content_body").append(profileFull(JSON.parse(profile)));
 
+function mihomoPost(uid){
+    $.ajax({
+        type: "POST",
+        url: "{{url_for('create_file')}}",
+        data: {"uid": uid},
+        success: function(data){
+            console.log(data);
+            localStorage.setItem("current_hsr_profile", JSON.stringify(data));
+        },
+        dataType: "json"
+    })
+}
+
 
 function characterView(character_json){
-    let active_trace_border = "inset 0px 0px 8px 0px " + character_json["element"]["color"];
+
+    const hexto2 = (s) => {return s.length==2?s:"0"+s};
+
+    const multiplyColor = (str, factor) => { if(str[0] == "#") str=str.substring(1,7);return "#"+hexto2(Math.round(Number("0x"+str.substring(0,2))*factor).toString(16)) + hexto2(Math.round(Number("0x"+str.substring(2,4))*factor).toString(16)) + hexto2(Math.round(Number("0x"+str.substring(4,6))*factor).toString(16));}
+
+    const colorup = (str, f) => { if(str[0] == "#") str=str.substring(1,7); return "#"+ hexto2(Math.round((Number("0xff")-Number("0x"+str.substring(0,2)))*f+Number("0x"+str.substring(0,2))).toString(16)) + hexto2(Math.round((Number("0xff")-Number("0x"+str.substring(2,4)))*f+Number("0x"+str.substring(2,4))).toString(16)) +hexto2(Math.round((Number("0xff")-Number("0x"+str.substring(4,6)))*f+Number("0x"+str.substring(4,6))).toString(16));}
+
+    let active_trace_border = "inset 0px 0px 6px 1px " + colorup(character_json["element"]["color"], 0.4);
     let element_name = character_json["element"]["name"];
+
+    console.log(character_json["element"]["color"]);
 
     var tree = {
         character:{
@@ -14,7 +36,8 @@ function characterView(character_json){
             css:{
                 // "backgroundImage": "url(static/assets/" + character_json["portrait"] + ")",
                 "backgroundImage": "url(https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/" + character_json["portrait"] + ")",
-                "background-color": character_json["element"]["color"]
+                // "background-color": character_json["element"]["color"]
+                "background-color": colorup(multiplyColor(character_json["element"]["color"], 0.75), 0.19)
             },
             skillTree:{
                 css:{},
@@ -35,11 +58,11 @@ function characterView(character_json){
                         // " - " + character_json["element"]["name"] + 
                         " - Lv. " + character_json["level"],
                     css:{
-                        "font-size" : character_json["name"].length > 10 ? "1.3rem": (character_json["name"].length > 5 ? "1.7rem" : "2.1rem"),
+                        "font-size" : character_json["name"].length > 10 ? "1.3rem": (character_json["name"].length > 5 ? "1.7rem" : "1.7rem"),
                         "letter-spacing" : character_json["name"].length > 10 ? "0px": (character_json["name"].length > 5 ? "0px" : "0.5px"),
                         "line-height" : character_json["name"].length > 10 ? "38px": (character_json["name"].length > 5 ? "40px" : "40px"),
                         "background-color" : "#303030",
-                        "color" : character_json["element"]["color"]
+                        "color" : colorup(character_json["element"]["color"], 0.3)
                     }
                 },
                 light_cone:{},
@@ -120,7 +143,7 @@ function characterView(character_json){
                         type:"img",
                         src:minorTraces[max]["icon"],
                         css:{
-                            "boxShadow" : j < minorTraces[max]["level"] ? active_trace_border:"none"
+                            "boxShadow" : j < minorTraces[max]["level"] ? "inset 0px 0px 3px 1px " + colorup(character_json["element"]["color"], 0.4):"none",
                         }
                     }
                 }
@@ -140,7 +163,7 @@ function characterView(character_json){
                     type:"img",
                     src:skill_tree[i]["icon"],
                     css:{
-                        "boxShadow" : skill_tree[i]["level"] > 0 ? active_trace_border:"none"
+                        "boxShadow" : skill_tree[i]["level"] > 0 ? active_trace_border:"none",
                     }
                 }
             }
@@ -155,7 +178,7 @@ function characterView(character_json){
                     type:"img",
                     src:character_json["rank_icons"][i],
                     css:{
-                        "boxShadow" : character_json["rank"] > i ? active_trace_border:"none"
+                        "boxShadow" : character_json["rank"] > i ? active_trace_border:"none",
                     }
                 }
             }
@@ -174,13 +197,17 @@ function characterView(character_json){
                     type:"img",
                     src:skill_tree[i]["icon"],
                     css:{
-                        "boxShadow" : skill_tree[i]["level"] >= abilityMaxLevels[i] ? active_trace_border:"none"
+                        "boxShadow" : skill_tree[i]["level"] >= abilityMaxLevels[i] ? active_trace_border:"none",
                     },
                     class: "character_ability_icon"
                 },
                 level:{
                     class: "character_ability_level",
                     text: skill_tree[i]["level"],
+                    css:{ 
+                        "color" : skill_tree[i]["level"] >= abilityMaxLevels[i] ? colorup(character_json["element"]["color"], 0.3) : "#d9d9d9",
+                        // "backgroundColor": skill_tree[i]["level"] >= abilityMaxLevels[i] ?  : "#303030",
+                    }
                 }
             }
         }
@@ -221,9 +248,12 @@ function characterView(character_json){
             const target_mainstat_name = ["energy regeneration rate", element_name+" dmg boost"]
             const target_mainstat_short_name = ["Energy Regen", element_name+"%"]
             const mainstat_short_name = (name, type) => {
-                for(let i = 0; i<target_mainstat_name.length; i++){
-                    if(name.toLowerCase().includes(target_mainstat_name[i].toLowerCase())) return target_mainstat_short_name[i];
-                }
+                // for(let i = 0; i<target_mainstat_name.length; i++){
+                //     if(name.toLowerCase().includes(target_mainstat_name[i].toLowerCase())) return target_mainstat_short_name[i];
+                // }
+                if(name.toLowerCase().includes(" dmg boost")) return name.split(" ")[0] + "%";
+                if(name.toLowerCase().includes("energy regeneration rate")) return "Energy%";
+                if(name == "Outgoing Healing Boost") return "Healing%";
                 if(type.toLowerCase().includes("addedratio")) return name+"%";
                 return name;
             }
@@ -249,7 +279,7 @@ function characterView(character_json){
                         src:current_relic["icon"],
                     },
                     css:{
-                        boxShadow: check_set(current_relic["set_id"]) ? "inset 0px 0px 10px 3px " + character_json["element"]["color"]:"none"
+                        boxShadow: check_set(current_relic["set_id"]) ? "inset 0px 0px 7px 3px " + colorup(character_json["element"]["color"], 0.4):"none"
                     }
                 },
                 substats:{
@@ -265,7 +295,6 @@ function characterView(character_json){
             }
 
             const isRatio = (type) => {return multiIncludes(type, ["Ratio", "Critical", "Status"])};
-
             // attach all substats onto relic
             for(let j = 0; j < 4; j++){
                 if(j in current_relic["sub_affix"] == false) break;
@@ -278,6 +307,7 @@ function characterView(character_json){
                     },
                 
                     txt:{
+                        class:"character_relic_substat_txt",
                         text: (current_relic["sub_affix"][j]["name"] == "Effect Hit Rate" ?
                             "EHR" : 
                             current_relic["sub_affix"][j]["name"]) + " " + (
@@ -391,19 +421,28 @@ function profileFull(json){
 
                     description:{
                         uid_container:{
-                            uid:{text:json["player"]["uid"]},
-                            copy_uid:{
-                                text:"content_copy",
-                                class:"material-icons"
-                            }
+                            text:"UID: "+json["player"]["uid"]
+                            // uid:{},
+                            // copy_uid:{
+                            //     text:json["player"]["uid"],
+                            //     // class:"material-icons"
+                            // }
                         },
                         achievement_container:{
-                            achievement:{text:"Achievements: "},
-                            achivement_count:{text:json["player"]["achievement_count"]}
+                            text:"Achievements: "+json["player"]["achievement_count"],
+                            class:"profile_full_desc_stlist"
                         },
                         friends_container:{
-                            friends:{text:"Friends: "},
-                            friends_count:{text:json["player"]["friend_count"]}
+                            text:"Friends: " + json["player"]["friend_count"],
+                            class:"profile_full_desc_stlist"
+                        },
+                        moc_stats:{
+                            text:"MOC Stars: ",
+                            class:"profile_full_desc_stlist"
+                        },
+                        moc_stats:{
+                            text:"MOC Stars: ",
+                            class:"profile_full_desc_stlist"
                         }
                     }
                 },

@@ -1,5 +1,5 @@
 :root{
-    --header-height:80px;
+    --header-height:60px;
     --sidebar-width:180px;
 
 
@@ -92,7 +92,7 @@ html body{
 
 #header_title{
     margin:auto;
-    font-size:36px;
+    font-size:28px;
     font-weight:800;
     text-align:center;
     line-height: var(--header-height);
@@ -179,22 +179,25 @@ html body{
     width:auto;
     height:fit-content;
 
-    padding: 0px 20px;
+    /* padding: 0px 20px; */
     
     overflow-x: auto;
 }
 
 #content_buffer{
-    height:10px;
+    height:0px;
 }
 
 #content_title{
     font-size:42px;
     font-weight:1000;
     text-align: center;
-    width:fit-content;
-    height:60px;
-    margin: 30px auto;
+    width:700px;
+    background-color: #202020;
+    height:fit-content;
+    margin: 40px auto 90px auto;
+    padding: 7px 0;
+    border-radius: 10px;
 
     color:var(--color-content_title);
 }

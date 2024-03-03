@@ -2,6 +2,7 @@ const profile = JSON.parse(localStorage.getItem("current_hsr_profile"));
 console.log(profile);
 
 let currentCharacter = "none";
+currentCharacter = profile["characters"][0];
 
 const relic_ranking_html_load = (container, profile) => {
     let html_tree = {
@@ -47,13 +48,17 @@ const relic_ranking_html_load = (container, profile) => {
         let char_list = profile["characters"];
 
         let char_count = 0;
+        let i = 0;
         let dropdown = {};
-        for(let i = 0; i < 4; i++){ // add player characters to dropdown list
-            if(char_list[i] == undefined) continue;
+        while(true){ // add player characters to dropdown list
+            if(char_list[i] == undefined) break;
+            i++;
+            console.log(char_list[i-1]);
+            if(!(char_list[i-1]["name"] in relic_ranking_data.char)) continue;
 
             dropdown[char_count] = {
-                class:"char_selection_dropdown_item char_selection_"+i,
-                text:char_list[i]["name"]
+                class:"char_selection_dropdown_item ___char_"+(i-1),
+                text:char_list[i-1]["name"]
             }
             char_count++;
         }
@@ -275,9 +280,10 @@ const relic_ranking_html_load = (container, profile) => {
                     },
                     value:{
                         class:"_description_rank_value",
-                        text:"> "+Math.round(data.overall_rank_thresholds[ranks[i]])
+                        text:"  "+(i==0?"Above ":(data.overall_rank_thresholds[ranks[i-1]]+0.1).toFixed(1)+" to ")+data.overall_rank_thresholds[ranks[i]].toFixed(1)
                     },
                 }
+                
             }
         }
 
@@ -360,7 +366,8 @@ const relic_ranking_html_load = (container, profile) => {
 
     const reload_page = () => {
         container.innerHTML = "";
-        if(currentCharacter.name == "Ruan Mei") ranking_data = relic_ranking_data[relic_ranking_data.char[currentCharacter.name]["default"]];
+        // if(currentCharacter.name == "Ruan Mei") ranking_data = relic_ranking_data[relic_ranking_data.char[currentCharacter.name]["default"]];
+        if(currentCharacter.name in relic_ranking_data.char) ranking_data = relic_ranking_data[relic_ranking_data.char[currentCharacter.name]["default"]];
         else ranking_data = relic_ranking_data[relic_ranking_data.char["Seele"]["default"]];
         html_tree["description"] = addDescription(tempData.setData, ranking_data);
         html_tree["content"] = addContent(currentCharacter, ranking_data);
@@ -378,7 +385,8 @@ const relic_ranking_html_load = (container, profile) => {
         container.addEventListener("mouseleave", () => { container.style.display = "none"; });
         for(let i = 0; i < dropdownList.length; i++){
             dropdownList[i].addEventListener("click", (e) => {
-                currentCharacter = profile.characters[i];
+                console.log(dropdownList[i].className.split("___char_")[1].split(" char_selection_dropdown_")[0], profile.characters);
+                currentCharacter = profile.characters[dropdownList[i].className.split("___char_")[1].split(" char_selection_dropdown_")[0]];
                 reload_page();
             })
         }
@@ -558,7 +566,6 @@ const relic_ranking_html_load = (container, profile) => {
     }
 
     addHeader();
-    currentCharacter = profile["characters"][0];
 
     reload_page();
 }

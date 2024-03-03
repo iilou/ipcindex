@@ -88,10 +88,11 @@
     border-radius: 30px;
     font-size:64px;
     font-weight:900;
-    background-color: #d9d9d9;
+    background-color: #1d1d1d;
     text-align:center;
     margin:auto;
     margin-top:24px;
+    box-shadow: 0px 0px 5px 0px #c9c9c9;
 } 
 ._content_overview_container_max{
     margin:auto;
@@ -110,7 +111,7 @@
     height:140px;
     /* margin:auto; */
     display:flex;
-    background-color: #3B3B3B;
+    background-color: #141414;
 }
 
 ._content_relic_icon{
@@ -119,8 +120,8 @@
     /* margin-left:35px; */
     margin-top:35px;
     border-radius: 100px;
-    background-color:#dadada;
-    border:15px solid #dadada;
+    background-color:var(--color-main_4);
+    border:15px solid var(--color-main_4);
     margin:auto;
 }
 
@@ -130,8 +131,8 @@
     width:260px;
     height:140px;
     display:grid;
-    grid-template-columns: auto 55px 37px 37px 37px;
-    grid-template-rows: auto 20px 20px 20px 20px;
+    grid-template-columns: calc(260px - 55px - 37px - 37px - 37px) 55px 37px 37px 37px;
+    grid-template-rows: 40px 20px 20px 20px 20px 20px;
     font-size:11px;
     color:#313131;
     text-align:center;
@@ -139,20 +140,21 @@
 }
 
 ._content_relic_label{
-    line-height:40px;
-    background-color: #d9d9d9;
-    font-size:14px;
+    line-height:45px;
+    color:var(--color-main_3);
+    background-color: #212121;
+    font-size:16px;
 }
 ._content_relic_value{
     line-height:21px;
-    background-color: #d9d9d9;
+    background-color: #a5a5a5;
 }
 
 ._content_relic_culmPoints{
     position:absolute;
     background-color: #313131;
-    color: #d9d9d9;
-    padding:5px 12px;
+    color: #a5a5a5;
+    padding:2px 12px;
     border-radius: 100px;
     transform: translate(130px, 136px);
     font-size:14px;
