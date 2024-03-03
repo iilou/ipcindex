@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from hoyo import getJSON, main;
+from waitress import serve;
 import asyncio
 
 app = Flask(__name__)
@@ -54,8 +55,10 @@ def relic_ranking_py():
 
 
 if __name__ == '__main__':
-    app.run(
-        host='127.0.0.1',
-        port=5001,
-        debug=True
-    )
+    # app.run(
+    #     host='127.0.0.1',
+    #     port=5001,
+    #     debug=True
+    # )
+
+    serve(app, host='127.0.0.1', port=5001)
