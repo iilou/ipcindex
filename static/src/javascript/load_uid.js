@@ -69,7 +69,8 @@ $("#profile_preview_page_index_box").css({"display": "none"});
 
 
 var uidqueue = getLocal("hsr_uid_queue");
-if(!"count" in uidqueue) {
+
+if(uidqueue == null || uidqueue == undefined || !"count" in uidqueue) {
     setLocal("hsr_uid_queue", {count:0});
     uidqueue = {};
 }
