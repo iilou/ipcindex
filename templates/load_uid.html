@@ -22,28 +22,33 @@
     <div id="body">
         <div id="sidebar">
             <div id="sidebar_selector"></div>
-
-            <a class="sidebar_option active" id="Load_UID">Load UID</a>
-            <a class="sidebar_option" id="Profile" href="{{url_for('profile_py')}}">Profile</a>
-            <a class="sidebar_option" id="Relic_Ranking" href="{{ url_for('relic_ranking_py') }}">Relic Leaderboards</a>
+            
+            <!-- <img class="sidebar_img" src=""/> -->
+            <div id="sidebar_main">
+                <a class="sidebar_option" id="Load_UID"><div>Load UID</div></a>
+                <a class="sidebar_option active" id="Profile" href="{{ url_for('profile_py') }}"><div>Profile</div></a>
+                <a class="sidebar_option" id="Relic_Ranking" href="{{ url_for('relic_ranking_py') }}"><div>Relic</div></a>
+            </div>
         </div>
         <div id="content">
-            <div id="content_buffer"></div>
-            <div id="content_title">Account Loader</div>
-            <div id="content_body">
-                <div class="uidSearch_main">
-                    <input name="" id="uidSearch_text" cols="30" rows="1" type="input"/>
-                    <div id="uidSearch_button">Search Index</div>
-    
-                    <div id="profile_preview_box">
-                        <div id="profile_preview_title">
-                            --- Profile Queue ---
+            <div class="maxarea 1300">
+                <div id="content_buffer"></div>
+                <div id="content_title">Account Loader</div>
+                <div id="content_body">
+                    <div class="uidSearch_main">
+                        <input name="" id="uidSearch_text" cols="30" rows="1" type="input"/>
+                        <div id="uidSearch_button">Search Index</div>
+        
+                        <div id="profile_preview_box">
+                            <div id="profile_preview_title">
+                                --- Profile Queue ---
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </div> 
     <script>
         function performPost(uid){
             $.ajax({

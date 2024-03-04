@@ -1,7 +1,12 @@
 var profile = localStorage.getItem("current_hsr_profile");
-console.log(JSON.parse(profile));
+// if(profile == null){
+//     document.getElementById("");
+// }
 
-$("#content_body").append(profileFull(JSON.parse(profile)));
+// else{
+    console.log(JSON.parse(profile));
+    $("#content_body").append(profileFull(JSON.parse(profile)));
+// }
 
 function mihomoPost(uid){
     $.ajax({
@@ -32,6 +37,7 @@ function characterView(character_json){
 
     var tree = {
         character:{
+            class:character_json.name,
             break:{},
             css:{
                 // "backgroundImage": "url(static/assets/" + character_json["portrait"] + ")",
@@ -65,8 +71,8 @@ function characterView(character_json){
                         "color" : colorup(character_json["element"]["color"], 0.3)
                     }
                 },
+                attributes:{},
                 light_cone:{},
-                attributes:{}
             },
 
             relics:{
@@ -85,10 +91,10 @@ function characterView(character_json){
                 type:"img",
                 src:character_json["light_cone"]["icon"],
             },
-            title:{
-                text:"\"" + character_json["light_cone"]["name"] + "\""
-            },
-            details:{
+            desc:{
+                title:{
+                    text:"\"" + character_json["light_cone"]["name"] + "\""
+                },
                 superimposition:{
                     text:"S" + character_json["light_cone"]["rank"],
                     css:{
@@ -261,17 +267,6 @@ function characterView(character_json){
             // base tree
             obj_reference["relic"+(i+1)] = {
                 class: "character_relic",
-                main_stat:{
-                    class:"character_relic_mainstat",
-                    name:{
-                        class:"character_relic_mainstat_name",
-                        text:mainstat_short_name(current_relic["main_affix"]["name"], current_relic["main_affix"]["type"])
-                    },
-                    value:{
-                        class:"character_relic_mainstat_value",
-                        text:current_relic["main_affix"]["display"],
-                    }
-                },
                 icon_container:{
                     class:"character_relic_icon_container",
                     icon:{
@@ -314,6 +309,18 @@ function characterView(character_json){
                             (isRatio(current_relic["sub_affix"][j]["type"]) ? Math.round((current_relic["sub_affix"][j]["value"]*1000))/10 + "%": Math.round((current_relic["sub_affix"][j]["value"]*10))/10))
                     },
                     
+                }
+            }
+
+            obj_reference["relic"+(i+1)].mainstat={
+                class:"character_relic_mainstat",
+                name:{
+                    class:"character_relic_mainstat_name",
+                    text:mainstat_short_name(current_relic["main_affix"]["name"], current_relic["main_affix"]["type"])
+                },
+                value:{
+                    class:"character_relic_mainstat_value",
+                    text:current_relic["main_affix"]["display"],
                 }
             }
         }
@@ -392,11 +399,11 @@ function characterView(character_json){
         }
     }
 
-    add_light_cone(tree.character.main);
     add_minor_traces(tree.character.skillTree.minorTraces);  
     add_major_traces(tree.character.skillTree.majorTraces);
     add_eidolons(tree.character.skillTree.eidolons);
     add_abilities(tree.character.skillTree.abilities);
+    add_light_cone(tree.character.main);
     add_attributes(tree.character.main.attributes);
     add_relics(tree.character.relics);
 
@@ -419,15 +426,11 @@ function profileFull(json){
                         }
                     },
 
-                    description:{
-                        uid_container:{
-                            text:"UID: "+json["player"]["uid"]
-                            // uid:{},
-                            // copy_uid:{
-                            //     text:json["player"]["uid"],
-                            //     // class:"material-icons"
-                            // }
-                        },
+                    uid_container:{
+                        text:"UID: "+json["player"]["uid"],
+                        class:"profile_full_uid_container"
+                    },
+                    details:{
                         achievement_container:{
                             text:"Achievements: "+json["player"]["achievement_count"],
                             class:"profile_full_desc_stlist"
@@ -438,13 +441,10 @@ function profileFull(json){
                         },
                         moc_stats:{
                             text:"MOC Stars: ",
-                            class:"profile_full_desc_stlist"
+                            class:"profile_full_desc_stlist lst"
                         },
-                        moc_stats:{
-                            text:"MOC Stars: ",
-                            class:"profile_full_desc_stlist"
-                        }
                     }
+                    
                 },
                 description:{
                     nickname:{text:json["player"]["nickname"]},
@@ -452,8 +452,10 @@ function profileFull(json){
                     signature:{text:"\"" + json["player"]["signature"] + "\""}
                 }
             },
+
+            title:{text:"Characters"},
+
             character_container:{
-                "_title":{text:"Characters"},
                 break:{}
             }
         }

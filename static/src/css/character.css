@@ -4,14 +4,19 @@
 }
 
 .character_container{
-    width:1050px;
+    width:1000px;
     margin:auto;
     margin-top:10px;
     display:grid;
     gap:30px;
     padding:20px 0px;
-    background-color: #303030;
-    border-radius: 40px;
+    /* background-color: #303030; */
+    border:1px solid var(--color-black_3);
+    border-radius: 10px;
+}
+
+.character_container:hover{
+    border:1px solid var(--color-main_3);
 }
 
 .character{
@@ -28,19 +33,20 @@
     background-size: 700px 700px;
     background-repeat: no-repeat;
     background-position: -150px center;
+
+    opacity:0.70;
 }
 
-.character_container__title{
-    width:940px;
-    padding: 12px 0;
-    text-align: center;
-    border-radius: 5px;
-    margin:auto;
-    font-size:32px;
-    font-weight:800;
-    background-color: #202020;
-    color:var(--color-characters_title);
+.character.Blade{
+    background-position: -150px -20px;
 }
+
+.character.Seele, .character.Jing.Yuan{
+    background-position: -150px -100px;
+}
+
+.character:hover{opacity:1}
+
 
 .character_skillTree{
     width:40%;
@@ -179,7 +185,7 @@
 
 .character_ability_level{
     transform:translate(19px, -17px);
-    position:absolute;
+    position:relative;
     font-size:10px;
     font-weight: 700;
     border-radius: 1000px;
@@ -332,28 +338,27 @@
 
 
 .character_main_light_cone{
-    position:absolute;
-    transform: translate(0px, 95px);
-    width:fit-content;
-    height:100px;
+    position:relative;
+    transform: translate(30px, -210px);
+    width:230px;
+    height:120px;
     display:flex;
-    flex-direction: column;
     flex-wrap:wrap;
     /* justify-content: space-evenly; */
     gap:5px;
 }
 
 .character_main_light_cone_rarity{
-    position:absolute;
+    position:relative;
     width:80px;
     height:16px;
-    transform:translate(10px, -30px);
     border-radius:10px;
     background-color: #303030;
     padding: 3px 12px;
+    margin-right:70px;
 }
 
-.character_main_light_cone_title{
+.character_main_light_cone_desc_title{
     width:100px;
     height:fit-content;
     font-size:14px;
@@ -374,23 +379,35 @@
 
 .character_main_light_cone_details{
     display:flex;
+}
+
+.character_main_light_cone_desc{
+    display:flex;
+    flex-wrap: wrap;
+    width:140px;
+    
+    align-content: flex-start;
     gap:5px;
 }
 
-.character_main_light_cone_details_superimposition{
+.character_main_light_cone_desc_superimposition{
     font-size:12px;
     font-weight:700;
     background-color: #303030;
     border-radius: 1000px;
     padding: 2px 12px;
+    width:fit-content;
+    height: fit-content;
 }
 
-.character_main_light_cone_details_level{
+.character_main_light_cone_desc_level{
     font-size:12px;
     font-weight:700;
     background-color: #303030;
     border-radius: 1000px;
     padding: 2px 12px;
+    width:fit-content;
+    height: fit-content;
 }
 
 
@@ -484,6 +501,7 @@
     border-radius:10000px;
     position: relative;
     border:3px solid #505050;
+    margin-bottom:15px;
 }
 
 .character_relic_icon_container img{
@@ -494,16 +512,22 @@
 }
 
 .character_relic_mainstat{
-    position: absolute;
+    position: relative;
     width:115px;
-    height:70px;
-    transform:translate(-10px,-21px);
+    height:170px;
+    transform:translate(-10px,-181px);
     display:flex;
     justify-content: start;
     align-items: end;
     flex-direction: column;
     flex-wrap: wrap;
     gap:2px;
+}
+
+.character_relic_mainstat:hover div{
+    
+    color: var(--color-main_4);
+    background-color: var(--color-black_3);
 }
 
 .character_relic_mainstat_name{

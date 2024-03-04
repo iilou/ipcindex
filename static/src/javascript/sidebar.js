@@ -4,7 +4,7 @@ var min_content_width = 1000;
 
 function revealSidebar(){
     // if($(content_body).innerWidth() > min_content_width){
-        $('#content').css({"padding-left": "var(--sidebar-width)"});
+    $('#content').css({"padding-left": "var(--sidebar-width)"});
     // }
     $('#sidebar').css({"width": "var(--sidebar-width)"});
     $('#sidebar').children().css({"display": "block"});
@@ -38,3 +38,5 @@ $(window).resize(function() {
 
 $(window).innerWidth() > force_close_threshold ?  force_sidebar_open = true : force_sidebar_open = false;
 $(window).innerWidth() > force_close_threshold ?  revealSidebar() : hideSidebar();
+
+document.querySelector(".maxarea").style.width = document.querySelector(".maxarea").className.split(" ")[1]+"px";

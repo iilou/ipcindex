@@ -25,14 +25,18 @@
             <div id="sidebar_selector"></div>
             
             <!-- <img class="sidebar_img" src=""/> -->
-            <a class="sidebar_option" id="Load_UID" href="{{ url_for('load_uid_py') }}">Load UID</a>
-            <a class="sidebar_option active" id="Profile">Profile</a>
-            <a class="sidebar_option" id="Relic_Ranking" href="{{ url_for('relic_ranking_py') }}">Relic Leaderboards</a>
+            <div id="sidebar_main">
+                <a class="sidebar_option" id="Load_UID" href="{{ url_for('load_uid_py') }}"><div>Load UID</div></a>
+                <a class="sidebar_option active" id="Profile"><div>Profile</div></a>
+                <a class="sidebar_option" id="Relic_Ranking" href="{{ url_for('relic_ranking_py') }}"><div>Relic</div></a>
+            </div>
         </div>
         <div id="content">
-            <div id="content_buffer"></div>
-            <div id="content_title">Your Profile</div>
-            <div id="content_body">
+            <div class="maxarea 1300">
+                <div id="content_buffer"></div>
+                <div id="content_title">Your Profile</div>
+                <div id="content_body">
+                </div>
             </div>
         </div>
     </div>

@@ -53,7 +53,7 @@ const relic_ranking_html_load = (container, profile) => {
         while(true){ // add player characters to dropdown list
             if(char_list[i] == undefined) break;
             i++;
-            console.log(char_list[i-1]);
+            //console.log(char_list[i-1]);
             if(!(char_list[i-1]["name"] in relic_ranking_data.char)) continue;
 
             dropdown[char_count] = {
@@ -188,7 +188,7 @@ const relic_ranking_html_load = (container, profile) => {
         
         const addRelic = (i, relicData) => {
             let exists = relicData[i] != "none";
-            console.log(i, exists, relicData[i]);
+            //console.log(i, exists, relicData[i]);
 
             content_tree["relic_"+i] = {
                 class:"_content_relic_container",
@@ -383,12 +383,20 @@ const relic_ranking_html_load = (container, profile) => {
 
         selector.addEventListener("click", () => { container.style.display = "block"; });
         container.addEventListener("mouseleave", () => { container.style.display = "none"; });
+
+
         for(let i = 0; i < dropdownList.length; i++){
+
             dropdownList[i].addEventListener("click", (e) => {
+
+
                 console.log(dropdownList[i].className.split("___char_")[1].split(" char_selection_dropdown_")[0], profile.characters);
                 currentCharacter = profile.characters[dropdownList[i].className.split("___char_")[1].split(" char_selection_dropdown_")[0]];
+
+
                 reload_page();
             })
+            
         }
     }
 
